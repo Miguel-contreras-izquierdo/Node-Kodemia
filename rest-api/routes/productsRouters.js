@@ -2,44 +2,40 @@ const express = require("express")
 const router = express.Router()
 const faker = require("faker")
 const { restart } = require("nodemon")
+const product = require("../usecases/products")
 
-router.get("/", (request,response)=>{
+router.get("/", async (request,response,next)=>{
     const products =[]
     const {limit} = request.query
-
-    for(let index = 0; index<limit ; index++){
-        products.push({
-            name:faker.commerce.productName(),
-            price:parseInt(faker.commerce.price(),10),
-            image:faker.image.imageUrl(),
-
-        })
-    }
-    if(limit){
+    try{
+        const products = await product.get()
         response.json({
             ok:true,
-            payload:products,
+            message:"Done!",
+            payload:{products}
         })
-    }else{
-        response.json({
-            ok:false,
-            message: "El limite es obligatorio"
-        })
+    }catch(error){
+        next(error)
     }
-})
+    
+})  
 
 
 /// Exercise products/un_product
-router.get("/:productId", (request,response)=>{
+router.get("/:productId",async (request,response,next)=>{
   
     const {productId} = request.params
-    
-    response.json({
-            productId,
-            name:faker.commerce.productName(),
-            price:parseInt(faker.commerce.price(),10),
-            image:faker.image.imageUrl(),
-    })
+   
+    try{
+        const product = await product.getById(productId)
+        response.json({
+            ok:true,
+            message:"Done!",
+            payload: {product},
+        })
+    }catch(error){
+        next(error)
+    }
 })
 
 // Creando post

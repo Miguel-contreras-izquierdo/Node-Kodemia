@@ -6,7 +6,8 @@ const faker = require("faker")
 const apiRouter = require("./routes")
 const {logErrors, errorHandler} = require("./middlewares/errorHandlers")
 const authHandler = require("./middlewares/authHandlers")
-
+// Llama a la función para conectar la base de datos, se llama en el listen (cuando se levanta el servidor)
+const db = require("./lib/db")
 
 // Muestra la información en formato json, parsea todoe el contenido JSON
 app.use(express.json())
@@ -63,37 +64,44 @@ app.use(errorHandler)
 
 // Levantando el servidor web
 
-app.listen(port, ()=>{
+app.listen(port, () =>{
     console.log("Listening on port:",port)
+    db.connect()
+    .then(()=>{
+        console.log("DB connected")
+    })
+    .catch((error)=>{
+        console.error("Connection refused",error)
+    })
 })
 
 
-// Usando faker
+// // Usando faker
 
-app.get("/products", (request,response)=>{
-    const products =[]
-    const {limit} = request.query
+// app.get("/products", (request,response)=>{
+//     const products =[]
+//     const {limit} = request.query
 
-    for(let index = 0; index<limit ; index++){
-        products.push({
-            name:faker.commerce.productName(),
-            price:parseInt(faker.commerce.price(),10),
-            image:faker.image.imageUrl(),
+//     for(let index = 0; index<limit ; index++){
+//         products.push({
+//             name:faker.commerce.productName(),
+//             price:parseInt(faker.commerce.price(),10),
+//             image:faker.image.imageUrl(),
 
-        })
-    }
-    if(limit){
-        response.json({
-            ok:true,
-            payload:products,
-        })
-    }else{
-        response.json({
-            ok:false,
-            message: "El limite es obligatorio"
-        })
-    }
-})
+//         })
+//     }
+//     if(limit){
+//         response.json({
+//             ok:true,
+//             payload:products,
+//         })
+//     }else{
+//         response.json({
+//             ok:false,
+//             message: "El limite es obligatorio"
+//         })
+//     }
+// })
 
 
 
