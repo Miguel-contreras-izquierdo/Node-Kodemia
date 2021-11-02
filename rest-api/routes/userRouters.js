@@ -55,12 +55,12 @@ router.post("/",async(request,response,next)=>{
     try{
         const userData = request.body
         const userCreated = await createUser.create(userData)
-
+        const {userName} =userCreated
         response.status(201).json({
             ok:true,
             message:"User Created successfully",
             payload:{
-                userCreated,
+                userName,
             }
         })
     }catch(error){

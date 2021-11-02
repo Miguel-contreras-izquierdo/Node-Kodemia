@@ -3,7 +3,7 @@ const express = require("express")
 const app = express()
 const port = 8000
 const faker = require("faker")
-const apiRouter = require("./routes")
+const apiRouter = require("./routes/index")
 const {logErrors, errorHandler} = require("./middlewares/errorHandlers")
 const authHandler = require("./middlewares/authHandlers")
 // Llama a la función para conectar la base de datos, se llama en el listen (cuando se levanta el servidor)
@@ -14,10 +14,7 @@ app.use(express.json())
 
 // Este es el punto de entrada , se queda en el index, siempre tendría que existir
 
-app.get("/",(request,response)=>{
-    response.send("Hello Koders-world")
 
-})
 // Importando el  modulos de middleware de autentification , va antes incluso que el router de las rutas
 
 // app.use(authHandler)

@@ -1,14 +1,14 @@
 const jsonwebtoken = require("jsonwebtoken")
 
-const sign = async (payload)=>{
+const sign = (payload)=>{
     const secret = process.env.SECRET
-    return await jsonwebtoken.sign(payload,secret)
+    return jsonwebtoken.sign(payload,secret)
 
 }
-
-const verify =async(token)=>{
+// Regresa el objeto payload
+const verify =(token)=>{
     const secret = process.env.SECRET
-    return await jsonwebtoken.verify(token,secret)
+    return jsonwebtoken.verify(token,secret)
 }
 
 module.exports = {

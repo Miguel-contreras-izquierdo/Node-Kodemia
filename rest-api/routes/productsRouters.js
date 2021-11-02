@@ -1,9 +1,9 @@
 const express = require("express")
 const router = express.Router()
-const faker = require("faker")
 const { restart } = require("nodemon")
 const product = require("../usecases/products")
-
+const authHandler = require("../middlewares/authHandlers")
+const app = express()
 router.get("/", async (request,response,next)=>{
     const products =[]
     const {limit} = request.query
@@ -27,11 +27,11 @@ router.get("/:productId",async (request,response,next)=>{
     const {productId} = request.params
    
     try{
-        const product = await product.getById(productId)
+        const productGet = await product.getById(productId)
         response.json({
             ok:true,
             message:"Done!",
-            payload: {product},
+            payload: {productGet},
         })
     }catch(error){
         next(error)
@@ -39,8 +39,8 @@ router.get("/:productId",async (request,response,next)=>{
 })
 
 // Creando post
-
-router.post("/",async (request, response,next)=>{
+// app.use(authHandler)
+router.post("/",authHandler,async (request, response,next)=>{
     
 
     try{

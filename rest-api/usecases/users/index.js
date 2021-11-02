@@ -13,6 +13,8 @@ bcrypt.hash(pass)
 */
 const bcrypt = require("bcrypt")
 const User = require("../../models/users").model
+const encrypt = require("../../lib/encrypt")
+const jwt = require("../../lib/jwt")
 
 const create = async(userData) =>{
     const {email,firstName,lastName,userName,password} = userData
@@ -32,19 +34,39 @@ const create = async(userData) =>{
 
 const verifyToken = async(token,secret)=>{
 
-    // ir por el token con find en la DB>
-    return  await jwt.verify(token,secret)
+   return  await jwt.verify(token,secret)
 }
 //   usar verifyToken de acuerdo al request en el middleware
 
 const getByUserName = async(userName)=>{
     return await User.findOne(userName)
+    
 }
 
+const logIn = async(userName,password)=>{
+    const userObject = await getByUserName({userName})
+    const hash = userObject.password
+    const isValid = await encrypt.verifyPassword(password,hash)
+
+    if(isValid){
+        const payload = {
+            sub:userObject._id,
+            role:userObject.role,
+        }
+        const token = await jwt.sign(payload)
+        return token
+    }else{
+        error()
+    }
+    
+    
+
+}
 
 module.exports = {
     create,
     verifyToken,
     getByUserName,
+    logIn,
 }
 
