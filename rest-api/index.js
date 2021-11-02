@@ -20,7 +20,7 @@ app.get("/",(request,response)=>{
 })
 // Importando el  modulos de middleware de autentification , va antes incluso que el router de las rutas
 
-app.use(authHandler)
+// app.use(authHandler)
 
 // Enviando al index de las rutas
 

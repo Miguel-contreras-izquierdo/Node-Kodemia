@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const faker = require("faker")
+const createUser = require("../usecases/users")
 
 // Get users general
 router.get("/", (request,response)=>{
@@ -51,16 +51,22 @@ router.get("/:userId", (request,response)=>{
 //Post user por userId
 // ¿ Como aseguro que los cambos del usuario vengan completos
 // Usar middleware
-router.post("/",(request,response)=>{
-    const body = request.body
+router.post("/",async(request,response,next)=>{
+    try{
+        const userData = request.body
+        const userCreated = await createUser.create(userData)
 
-    response.status(201).json({
-        ok:true,
-        message:"Created successfully",
-        payload:{
-            body,
-        }
-    })
+        response.status(201).json({
+            ok:true,
+            message:"User Created successfully",
+            payload:{
+                userCreated,
+            }
+        })
+    }catch(error){
+        next(error)
+    }
+
 })
 
 // Patch en usersId
@@ -73,11 +79,11 @@ router.patch("/:userId",(request,response)=>{
         ok:true,
         message:`User ${userId} updated succesfully`,
         payload:{
-            auth,
-            userId,
-            userName,
             firstName,
             lastName,
+            userName,
+            email,
+            password
         }
 
     })

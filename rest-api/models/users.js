@@ -26,6 +26,14 @@ const schema = new Schema({
         unique:true,
 
     },
+    email:{
+        type:String,
+        required:true,
+        trim:true,
+        minlength:1,
+        unique:true,
+
+    },
     password:{
         type:String,
         required:true,

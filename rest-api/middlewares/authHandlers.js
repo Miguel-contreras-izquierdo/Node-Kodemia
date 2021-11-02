@@ -1,6 +1,8 @@
+// const verify = require("")
+
 const authHandler = (req,res,next)=>{
-    const {auth } = req.body
-    if (auth){
+    const {token} = req.headers
+    if (token=== "TOKEN-123"){
         next()
     }else{
         res.status(403).json(

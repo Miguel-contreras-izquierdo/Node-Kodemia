@@ -40,47 +40,64 @@ router.get("/:productId",async (request,response,next)=>{
 
 // Creando post
 
-router.post("/",(request, response)=>{
-    const body = request.body
-    response.status(201).json({
-        ok:true,
-        message:"Created successfully",
-        payload:{
-            body,
-        }
-        
-    })
+router.post("/",async (request, response,next)=>{
+    
+
+    try{
+        const productData = request.body
+        const productCreated = await product.create(productData)
+
+        response.status(201).json({
+            ok:true,
+            message:"New Product created successfully",
+            payload:{
+                product: productCreated,
+            }
+            
+        })
+    }catch(error){
+        next(error)
+    }
+    
 
 })
 
 
 // Creando patch
-router.patch("/:productId",(request,response)=>{
+router.patch("/:productId",async (request,response,next)=>{
     const {productId} = request.params
-    const {name, price,auth} = request.body
-
-    response.json({
-        ok:true,
-        message:`Product ${productId} updated succesfully`,
-        payload:{
-            auth,
-            name,
-            price,
-        }
-    })
+    const {name, price} = request.body
+    try{
+        const productPatch = await product.update(productId,{name,price})
+        response.json({
+            ok:true,
+            message:`Product ${productId} updated succesfully`,
+            payload:{
+                product:{productPatch}
+            }
+        })
+    }catch(error){
+        next(error)
+    }
+    
 })
 
 // Creando delete
 
-router.delete("/:productId",(request,response)=>{
+router.delete("/:productId",async (request,response,next)=>{
     const {productId} = request.params
-    const {auth} = request.body
+     // logica para eliminar
+    try{
+        const productDelete = await product.del(productId)
+        response.status(202).json({
+            ok:true,
+            message: `Product ${productId} deleted succesfully`
+        })
+    }catch(error){
+        next(error)
+    }
+   
     
-    // logica para eliminar
-    response.status(202).json({
-        ok:true,
-        message: `Product ${productId} deleted succesfully`
-    })
 
 })
 
